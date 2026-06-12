@@ -1,0 +1,29 @@
+namespace: finbank
+
+image:
+  registry: "123456789012.dkr.ecr.ap-south-1.amazonaws.com/finops-data-platform"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+services:
+  accountService:
+    name: account-service
+    port: 8080
+    replicas: 2
+  transactionService:
+    name: transaction-service
+    port: 8080
+    replicas: 2
+  loanService:
+    name: loan-service
+    port: 8080
+    replicas: 2
+  fraudService:
+    name: fraud-service
+    port: 8080
+    replicas: 2
+
+ingress:
+  enabled: true
+  className: alb
+  host: finbank.example.com
