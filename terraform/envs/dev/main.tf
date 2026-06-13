@@ -15,7 +15,7 @@ module "eks" {
   source             = "../../modules/eks"
   project_name       = var.project_name
   environment        = var.environment
-  private_subnet_ids = module.vpc.private_subnet_ids
+  private_subnet_ids = module.vpc.public_subnet_ids
 }
 
 module "s3" {
@@ -28,23 +28,23 @@ module "glue" {
   source       = "../../modules/glue"
   project_name = var.project_name
   environment  = var.environment
-  data_bucket   = module.s3.bucket_name
+  data_bucket  = module.s3.bucket_name
 }
 
-module "emr" {
-  source            = "../../modules/emr"
-  project_name      = var.project_name
-  environment       = var.environment
-  subnet_id         = module.vpc.private_subnet_ids[0]
-  log_bucket        = module.s3.bucket_name
-}
+# module "emr" {
+#  source       = "../../modules/emr"
+#  project_name = var.project_name
+#  environment  = var.environment
+#  subnet_id    = module.vpc.private_subnet_ids[0]
+#  log_bucket   = module.s3.bucket_name
+#}
 
-module "redshift" {
-  source             = "../../modules/redshift"
-  project_name       = var.project_name
-  environment        = var.environment
-  subnet_ids         = module.vpc.private_subnet_ids
-  vpc_id             = module.vpc.vpc_id
-  master_username    = "adminuser"
-  master_password    = "ChangeMe12345!"
-}
+# module "redshift" {
+#  source          = "../../modules/redshift"
+#  project_name    = var.project_name
+#  environment     = var.environment
+#  subnet_ids      = module.vpc.private_subnet_ids
+#  vpc_id          = module.vpc.vpc_id
+#  master_username = "adminuser"
+#  master_password = "ChangeMe12345!"
+#}

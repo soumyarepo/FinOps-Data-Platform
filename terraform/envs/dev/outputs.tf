@@ -14,6 +14,6 @@ output "s3_bucket_name" {
   value = module.s3.bucket_name
 }
 
-output "redshift_endpoint" {
-  value = module.redshift.endpoint
-}
+# output "redshift_endpoint" {
+#  value = module.redshift.endpoint
+# }
