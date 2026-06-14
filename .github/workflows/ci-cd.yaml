@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      max-parallel: 1
       matrix:
         service:
           - account-service
@@ -57,6 +58,7 @@ jobs:
           git config user.email "github-actions@github.com"
           git add helm/finbank-app/values.yaml
           git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes to commit"
+          git pull --rebase origin develop
           git push
 
       - name: Update kubeconfig for EKS
