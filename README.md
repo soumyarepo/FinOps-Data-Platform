@@ -174,3 +174,37 @@ kubectl apply --server-side -n argocd \
 
 
 
+
+
+kubectl annotate application finops-data-platform \
+  -n argocd \
+  argocd.argoproj.io/refresh=hard \
+  --overwrite
+
+kubectl get applications -n argocd
+
+kubectl get application finops-data-platform -n argocd -o jsonpath="{range .status.resources[*]}{.kind}{' '}{.name}{' => '}{.health.status}{' : '}{.health.message}{'\n'}{end}"
+
+aws ecr delete-repository \
+  --repository-name finops-data-platform/account-service \
+  --region ap-south-1 \
+  --force
+
+aws ecr delete-repository \
+  --repository-name finops-data-platform/transaction-service \
+  --region ap-south-1 \
+  --force
+
+aws ecr delete-repository \
+  --repository-name finops-data-platform/loan-service \
+  --region ap-south-1 \
+  --force
+
+aws ecr delete-repository \
+  --repository-name finops-data-platform/fraud-service \
+  --region ap-south-1 \
+  --force
+
+terraform destroy
+
+
