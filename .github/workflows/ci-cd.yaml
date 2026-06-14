@@ -4,7 +4,12 @@ on:
   push:
     branches:
       - develop
-    paths:
+
+permissions:
+  contents: write
+
+  
+  paths:
       - 'app/**'
       - 'helm/**'
       - 'argocd/**'
