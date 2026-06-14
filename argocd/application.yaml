@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/your-username/finops-data-platform.git
+    repoURL: https://github.com/soumyarepo/FinOps-Data-Platform.git
     targetRevision: main
     path: helm/finbank-app
     helm:

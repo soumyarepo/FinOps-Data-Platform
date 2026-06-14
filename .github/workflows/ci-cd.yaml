@@ -41,3 +41,18 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.ECR_REGISTRY }}/finops-data-platform/${{ matrix.service }}:${{ github.sha }}
+
+      -name: Update kubeconfig for EKS
+        run: |
+          aws eks update-kubeconfig \
+              --region ${{ secrets.AWS_REGION }} \
+              --name finops-data-platform-dev-eks
+
+      - name: Verify EKS connection
+        run: |
+          kubectl get nodes
+
+      - name: Apply Argo CD Application
+        run: |
+          kubectl apply -f argocd/application.yaml
+        

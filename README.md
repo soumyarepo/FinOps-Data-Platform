@@ -145,3 +145,32 @@ finops-data-platform/
 
 This project demonstrates how modern DevOps, Kubernetes, Infrastructure as Code, and Data Engineering services can be integrated to build a scalable banking platform capable of handling application workloads, transaction processing, analytics, and enterprise reporting on AWS.
 
+
+aws sts get-caller-identity
+
+aws eks list-clusters --region ap-south-1
+
+aws eks update-kubeconfig \
+  --region ap-south-1 \
+  --name finops-data-platform-dev-eks
+
+kubectl config current-context
+
+kubectl get nodes
+
+aws eks describe-cluster \
+  --name finops-data-platform-dev-eks \
+  --region ap-south-1 \
+  --query "cluster.endpoint"
+
+printf "Current Namespace: %s\n\n" "$(kubectl config view --minify --output 'jsonpath={..namespace}')"; kubectl get ns
+
+kubectl create namespace argocd
+
+kubectl config set-context --current --namespace=argocd
+
+kubectl apply --server-side -n argocd \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+
+
