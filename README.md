@@ -146,65 +146,200 @@ finops-data-platform/
 This project demonstrates how modern DevOps, Kubernetes, Infrastructure as Code, and Data Engineering services can be integrated to build a scalable banking platform capable of handling application workloads, transaction processing, analytics, and enterprise reporting on AWS.
 
 
+## Comands_I_Used
+
+## Deployment Walkthrough
+
+The following commands were used during the deployment, validation, troubleshooting, and cleanup phases of the project.
+
+---
+
+### Step 1: Verify AWS Access
+
+Before interacting with AWS resources, verify that the AWS CLI is authenticated and connected to the correct account.
+
+```bash
 aws sts get-caller-identity
+```
 
+---
+
+### Step 2: Verify EKS Cluster Availability
+
+List all EKS clusters available in the target AWS region.
+
+```bash
 aws eks list-clusters --region ap-south-1
+```
 
-aws eks update-kubeconfig \
-  --region ap-south-1 \
-  --name finops-data-platform-dev-eks
+Retrieve cluster details and verify that the cluster endpoint is reachable.
 
-kubectl config current-context
-
-kubectl get nodes
-
+```bash
 aws eks describe-cluster \
   --name finops-data-platform-dev-eks \
   --region ap-south-1 \
   --query "cluster.endpoint"
+```
 
+---
+
+### Step 3: Connect Local Machine to EKS
+
+Update the local kubeconfig file and connect kubectl to the EKS cluster.
+
+```bash
+aws eks update-kubeconfig \
+  --region ap-south-1 \
+  --name finops-data-platform-dev-eks
+```
+
+Confirm the active Kubernetes context.
+
+```bash
+kubectl config current-context
+```
+
+Verify that worker nodes are available and healthy.
+
+```bash
+kubectl get nodes
+```
+
+---
+
+### Step 4: Check Kubernetes Namespaces
+
+Display the currently active namespace and list all available namespaces.
+
+```bash
 printf "Current Namespace: %s\n\n" "$(kubectl config view --minify --output 'jsonpath={..namespace}')"; kubectl get ns
+```
 
+---
+
+### Step 5: Install ArgoCD
+
+Create a dedicated namespace for ArgoCD.
+
+```bash
 kubectl create namespace argocd
+```
 
+Set ArgoCD as the default namespace for the current kubectl context.
+
+```bash
 kubectl config set-context --current --namespace=argocd
+```
 
+Install ArgoCD using the official manifest.
+
+```bash
 kubectl apply --server-side -n argocd \
   -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
 
+Verify that all ArgoCD components are running successfully.
 
+```bash
+kubectl get pods -n argocd
+```
 
+---
 
+### Step 6: Validate ArgoCD Application
 
+After deploying the application through GitOps, refresh the application state.
+
+```bash
 kubectl annotate application finops-data-platform \
   -n argocd \
   argocd.argoproj.io/refresh=hard \
   --overwrite
+```
 
+Check synchronization and health status.
+
+```bash
 kubectl get applications -n argocd
+```
 
-kubectl get application finops-data-platform -n argocd -o jsonpath="{range .status.resources[*]}{.kind}{' '}{.name}{' => '}{.health.status}{' : '}{.health.message}{'\n'}{end}"
+View detailed health information for all resources managed by ArgoCD.
 
+```bash
+kubectl get application finops-data-platform \
+  -n argocd \
+  -o jsonpath="{range .status.resources[*]}{.kind}{' '}{.name}{' => '}{.health.status}{' : '}{.health.message}{'\n'}{end}"
+```
+
+---
+
+### Step 7: Verify Banking Application Deployment
+
+Validate deployments.
+
+```bash
+kubectl get deploy -n finbank
+```
+
+Validate running pods.
+
+```bash
+kubectl get pods -n finbank
+```
+
+Verify Kubernetes services.
+
+```bash
+kubectl get svc -n finbank
+```
+
+Check ingress resources.
+
+```bash
+kubectl get ingress -n finbank
+```
+
+---
+
+### Step 8: ECR Repository Cleanup
+
+During project cleanup, ECR repositories containing Docker images can be deleted using the force option.
+
+```bash
 aws ecr delete-repository \
   --repository-name finops-data-platform/account-service \
   --region ap-south-1 \
   --force
+```
 
+```bash
 aws ecr delete-repository \
   --repository-name finops-data-platform/transaction-service \
   --region ap-south-1 \
   --force
+```
 
+```bash
 aws ecr delete-repository \
   --repository-name finops-data-platform/loan-service \
   --region ap-south-1 \
   --force
+```
 
+```bash
 aws ecr delete-repository \
   --repository-name finops-data-platform/fraud-service \
   --region ap-south-1 \
   --force
+```
+
+---
+
+### Step 9: Destroy Infrastructure
+
+After testing and validation are complete, all AWS resources created through Terraform can be removed.
+
 
 terraform destroy
 
-
+This will remove the EKS cluster, worker nodes, networking components, ECR repositories, and all supporting infrastructure provisioned for the project.
