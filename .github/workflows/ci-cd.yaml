@@ -3,7 +3,7 @@ name: Build and Push Banking Services
 on:
   push:
     branches:
-      - main
+      - develop
     paths:
       - 'app/**'
       - '.github/workflows/ci-cd.yaml'

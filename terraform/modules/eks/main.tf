@@ -4,8 +4,8 @@ resource "aws_iam_role" "cluster" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "eks.amazonaws.com" }
     }]
   })
@@ -22,7 +22,9 @@ resource "aws_eks_cluster" "this" {
   version  = "1.30"
 
   vpc_config {
-    subnet_ids = var.private_subnet_ids
+    subnet_ids              = var.private_subnet_ids
+    endpoint_public_access  = true
+    endpoint_private_access = true
   }
 
   depends_on = [aws_iam_role_policy_attachment.cluster]
@@ -34,8 +36,8 @@ resource "aws_iam_role" "node" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "ec2.amazonaws.com" }
     }]
   })
@@ -63,12 +65,14 @@ resource "aws_eks_node_group" "this" {
   subnet_ids      = var.private_subnet_ids
 
   scaling_config {
-    desired_size = 2
-    max_size     = 3
+    desired_size = 1
+    max_size     = 1
     min_size     = 1
   }
 
-  instance_types = ["t3.medium"]
+  instance_types = ["t3.micro"]
+  capacity_type  = "ON_DEMAND"
+  disk_size      = 20
 
   depends_on = [
     aws_iam_role_policy_attachment.node_worker,

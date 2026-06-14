@@ -1,9 +1,86 @@
+# Terraform
+
 .terraform/
 *.tfstate
 *.tfstate.*
+*.tfvars
+*.tfvars.json
 *.tfvars.backup
+terraform.tfplan
 crash.log
-.DS_Store
-__pycache__/
-*.pyc
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+# Environment Files
+
 .env
+.env.*
+*.env
+
+# Python
+
+**pycache**/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# IDE
+
+.vscode/
+.idea/
+
+# OS Files
+
+.DS_Store
+Thumbs.db
+
+# Logs
+
+*.log
+
+# Kubernetes
+
+kubeconfig
+*.kubeconfig
+
+# Helm
+
+charts/
+*.tgz
+
+# ArgoCD
+
+argocd-secret.yaml
+
+# AWS
+
+.aws/
+
+# Test & Coverage
+
+.coverage
+pytest_cache/
+htmlcov/
+
+# Build Artifacts
+
+dist/
+build/
+
+# Mac/Linux Temp Files
+
+*.swp
+*.swo
+*~
+
+# NodeJS (if frontend added later)
+
+node_modules/
+npm-debug.log*
