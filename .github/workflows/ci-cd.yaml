@@ -42,7 +42,7 @@ jobs:
         run: |
           docker push ${{ secrets.ECR_REGISTRY }}/finops-data-platform/${{ matrix.service }}:${{ github.sha }}
 
-      -name: Update kubeconfig for EKS
+      - name: Update kubeconfig for EKS
         run: |
           aws eks update-kubeconfig \
               --region ${{ secrets.AWS_REGION }} \
