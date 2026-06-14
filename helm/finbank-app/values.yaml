@@ -2,7 +2,7 @@ namespace: finbank
 
 image:
   registry: "744376745946.dkr.ecr.ap-south-1.amazonaws.com/finops-data-platform"
-  tag: af2216429d343f373e189d60f1676dc34fc12526
+  tag: b8995f80ebe2f95d646a9dfbad9562780c84c620
   pullPolicy: IfNotPresent
 
 services:
