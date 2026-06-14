@@ -6,6 +6,8 @@ on:
       - develop
     paths:
       - 'app/**'
+      - 'helm/**'
+      - 'argocd/**'
       - '.github/workflows/ci-cd.yaml'
 
 jobs:
@@ -41,6 +43,18 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.ECR_REGISTRY }}/finops-data-platform/${{ matrix.service }}:${{ github.sha }}
+
+      - name: Update Helm image tag
+        run: |
+          sed -i "s/tag: .*/tag: ${{ github.sha }}/g" helm/finbank-app/values.yaml
+
+      - name: Commit updated image tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add helm/banking-app/values.yaml
+          git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes to commit"
+          git push
 
       - name: Update kubeconfig for EKS
         run: |

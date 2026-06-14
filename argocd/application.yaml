@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/soumyarepo/FinOps-Data-Platform.git
-    targetRevision: main
+    targetRevision: develop
     path: helm/finbank-app
     helm:
       valueFiles:
